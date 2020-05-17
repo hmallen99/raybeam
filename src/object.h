@@ -7,7 +7,7 @@ private:
 public:
     object();
     ~object();
-    bool intersect(ray* r);
+    bool intersect(ray* r, vec3* pHit, vec3* nHit);
 };
 
 object::object()
@@ -18,6 +18,6 @@ object::~object()
 {
 }
 
-bool object::intersect(ray* r) {
+bool intersect(ray* r, vec3* pHit, vec3* nHit) {
     return false;
 }

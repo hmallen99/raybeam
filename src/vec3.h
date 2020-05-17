@@ -20,12 +20,16 @@ class vec3 {
         double getz() {return z;}
 
         static vec3* add(vec3* a, vec3* b);
-        void add(vec3* b);
-        void sub(vec3* b);
-        void mul(double c);
-        void div(double c);
-        double l2norm();
+        static vec3* sub(vec3* a, vec3* b);
+        static vec3* cross(vec3* a, vec3* b);
         static double dot(vec3* a, vec3* b);
+
+        vec3* add(vec3* b);
+        vec3* sub(vec3* b);
+        vec3* mul(double c);
+        vec3* div(double c);
+        double l2norm();
+        
 
         vec3 operator-();
     
@@ -45,33 +49,38 @@ vec3* vec3::add(vec3* a, vec3* b) {
     return new vec3(a->getx() + b->getx(), a->gety() + b-> gety(), a->getz() + b->getz());
 }
 
-void vec3::add(vec3* b) {
-    x = x + b->getx();
-    y = y + b->gety();
-    z = z + b->getz();
+vec3* vec3::sub(vec3* a, vec3* b) {
+    return new vec3(a->getx() - b->getx(), a->gety() - b-> gety(), a->getz() - b->getz());
 }
 
-void vec3::sub(vec3* b) {
-    x = x - b->getx();
-    y = y - b->gety();
-    z = z - b->getz();
-}
-
-void vec3::mul(double c) {
-    x = x * c;
-    y = y * c;
-    z = z * c;
-}
-
-void vec3::div(double c) {
-    x = x / c;
-    y = y / c;
-    z = z / c;
+vec3* vec3::cross(vec3* a, vec3* b) {
+    double i = (a->gety() * b->getz()) - (a->getz() * b->gety());
+    double j = (a->getx() * b->getz()) - (a->getz() * b->getx());
+    double k = (a->getx() * b->gety()) - (a->gety() * b->getx());
+    return new vec3(i, j, k);
 }
 
 double vec3::dot(vec3* a, vec3* b) {
     return a->getx()* b->getx() + a->gety()*b->gety() + a->getz()*b->getz();
 }
+
+vec3* vec3::add(vec3* b) {
+    return new vec3(x + b->getx(), y + b->gety(), z + b->getz());
+}
+
+vec3* vec3::sub(vec3* b) {
+    return new vec3(x - b->getx(), y - b->gety(), z - b->getz());
+}
+
+vec3* vec3::mul(double c) {
+    return new vec3(x * c, y * c, z * c);
+}
+
+vec3* vec3::div(double c) {
+    return new vec3(x / c, y / c, z / c);
+}
+
+
 
 double vec3::l2norm() {
     return sqrt(x*x + y*y + z*z);
