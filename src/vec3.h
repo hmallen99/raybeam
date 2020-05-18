@@ -1,3 +1,4 @@
+#pragma once
 #include <math.h>
 
 class vec3 {
@@ -55,7 +56,7 @@ vec3* vec3::sub(vec3* a, vec3* b) {
 
 vec3* vec3::cross(vec3* a, vec3* b) {
     double i = (a->gety() * b->getz()) - (a->getz() * b->gety());
-    double j = (a->getx() * b->getz()) - (a->getz() * b->getx());
+    double j = (a->getz() * b->getx()) - (a->getx() * b->getz());
     double k = (a->getx() * b->gety()) - (a->gety() * b->getx());
     return new vec3(i, j, k);
 }

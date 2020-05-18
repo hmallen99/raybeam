@@ -1,3 +1,4 @@
+#pragma once
 #include "vec3.h"
 #include "ray.h"
 
@@ -5,19 +6,5 @@ class object
 {
 private:
 public:
-    object();
-    ~object();
-    bool intersect(ray* r, vec3* pHit, vec3* nHit);
+    virtual bool intersect(ray* r, vec3* pHit, vec3* nHit) = 0;
 };
-
-object::object()
-{
-}
-
-object::~object()
-{
-}
-
-bool intersect(ray* r, vec3* pHit, vec3* nHit) {
-    return false;
-}

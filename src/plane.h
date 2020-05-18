@@ -1,3 +1,4 @@
+#pragma once
 #include "object.h"
 
 class plane : object {
@@ -10,7 +11,7 @@ class plane : object {
             normal = n;
         }
         ~plane();
-        bool intersect(ray* r, vec3* pHit, vec3* nHit);
+        virtual bool intersect(ray* r, vec3* pHit, vec3* nHit);
 };
 
 bool plane::intersect(ray* r, vec3* pHit, vec3* nHit) {

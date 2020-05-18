@@ -1,31 +1,37 @@
+#pragma once
 #include "object.h"
 
-class triangle : object {
+class triangle : public object {
     private:
         vec3* p1;
         vec3* p2;
         vec3* p3;
         vec3* normal;
     public:
-        triangle(vec3* point1, vec3* point2, vec3* point3, vec3* n) {
+        triangle(vec3* point1, vec3* point2, vec3* point3) {
             p1 = point1;
             p2 = point2;
             p3 = point3;
-            normal = n;
         }
         ~triangle();
 
-        bool intersect(ray* r, vec3* pHit, vec3* nHit);
+        virtual bool intersect(ray* r, vec3* pHit, vec3* nHit);
 };
 
 // source: https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
 bool triangle::intersect(ray* r, vec3* pHit, vec3* nHit) {
+    const float eps = 0.00000001;
     vec3* edge1 = vec3::sub(p2, p1);
     vec3* edge2 = vec3::sub(p3, p1);
+    normal = vec3::cross(edge1, edge2);
     vec3* h = vec3::cross(r->direction(), edge2);
-    vec3* s = vec3::sub(r->origin, p1);
+    
     double a = vec3::dot(edge1, h);
+    if (a > eps && a < eps) {
+        return false;
+    }
     double f = 1.0 / a;
+    vec3* s = vec3::sub(r->origin(), p1);
     double u = f * vec3::dot(s, h);
 
     if (u < 0.0 || u > 1.0) {
