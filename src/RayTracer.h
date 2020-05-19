@@ -11,6 +11,7 @@
 #include <fstream>
 #include <float.h>
 #include "random.h"
+#include <memory>
 
 
 
@@ -22,7 +23,11 @@ class RayTracer {
         int spp;
         int** frame;
         std::vector<object* > objList;
-        vec3* intersect(ray* r, int depth);
+        std::shared_ptr<vec3> intersect(ray* r, int depth);
+        std::shared_ptr<vec3> minPHit;
+        std::shared_ptr<vec3> minNHit;
+        std::shared_ptr<vec3> pHit;
+        std::shared_ptr<vec3> nHit;
         int maxDepth;
         light* lt;
 
@@ -44,8 +49,8 @@ RayTracer::RayTracer(camera* c, light* l, int h, int w) {
     width = w;
     lt = l;
     frame = new int* [h * w];
-    maxDepth = 50;
-    spp = 100;
+    maxDepth = 25;
+    spp = 10;
     objList = std::vector<object*>();
 }
 
@@ -54,20 +59,18 @@ int** RayTracer::getFrame() {
 }
 
 void RayTracer::trace() {
-    vec3* pHit = new vec3();
-    vec3* nHit = new vec3();
     int pix = 0;
+    ray* r;
     for (int j = height - 1; j >= 0; j--) {
         for (int i = 0; i < width; i++) {
-            vec3* color = new vec3();
+            std::shared_ptr<vec3> color = std::make_shared<vec3>();
             for (int s = 0; s < spp; s++) {
                 float u = (float(i) + random::drand48()) / float(width);
                 float v = (float(j) + random::drand48()) / float(height);
-                ray* r = cam->getRay(u, v);
+                r = cam->getRay(u, v);
                 color = color->add(intersect(r, 0));
             }
             color = color->div(spp);
-            
             frame[pix] = new int[3];
             frame[pix][0] = int(color->getx() * 255);
             frame[pix][1] = int(color->gety() * 255);
@@ -78,26 +81,19 @@ void RayTracer::trace() {
 }
 
 
-vec3* RayTracer::intersect(ray* r, int depth) {
+std::shared_ptr<vec3> RayTracer::intersect(ray* r, int depth) {
     if (depth >= maxDepth) {
-        return new vec3();
-    }
-    if (depth == maxDepth - 5) {
-        int x = 0;
+        return std::make_shared<vec3>();
     }
     double minDist = DBL_MAX;
-    vec3* minPHit = new vec3();
-    vec3* minNHit = new vec3();
-    vec3* pHit = new vec3();
-    vec3* nHit = new vec3();
-    vec3* color;
+    std::shared_ptr<vec3> color;
     int objNum  = -1;
     for (int i = 0; i < objList.size(); i++) {
         if (objList[i]->intersect(r, pHit, nHit)) {
             double t = vec3::sub(pHit, cam->origin)->l2norm();
             if (t < minDist) {
-                minPHit = pHit;
-                minNHit = nHit;
+                minPHit = std::move(pHit);
+                minNHit = std::move(nHit);
                 minDist = t;
                 objNum = i;
             }

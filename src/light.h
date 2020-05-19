@@ -3,21 +3,21 @@
 
 class light {
     private:
-        vec3* origin;
-        vec3* color;
+        std::shared_ptr<vec3> origin;
+        std::shared_ptr<vec3> color;
         double brightness;
     public:
         light() {
-            origin = new vec3();
+            origin = std::make_shared<vec3>();
             brightness = 1.0;
-            color = new vec3(1, 1, 1);
+            color = std::make_shared<vec3>(1, 1, 1);
         }
 
-        light(vec3* o, double b) {
+        light(std::shared_ptr<vec3> o, double b) {
             brightness = b;
-            origin = o;
-            color = new vec3(1, 1, 1);
+            origin = std::move(o);
+            color = std::make_shared<vec3>(1, 1, 1);
         }
 
-        vec3* getColor() {return color;}
+        std::shared_ptr<vec3> getColor() {return color;}
 };

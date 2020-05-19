@@ -3,31 +3,30 @@
 #include <math.h>
 #include <algorithm>
 #include "material.h"
+#include <memory.h>
 
 class sphere : public object {
     private:
-        vec3* center;
+        std::shared_ptr<vec3> center;
         double radius;
 
     public:
-        sphere(vec3* c, double r) {
-            center = c;
+        sphere(std::shared_ptr<vec3> c, double r) {
+            center = std::move(c);
             radius = r;
-            setMaterial(new lambertian(new vec3(1, 1, 1)));
+            setMaterial(new lambertian(std::make_shared<vec3>(1, 1, 1)));
         }
-        sphere(vec3* c, double r, material* m) {
-            center = c;
+        sphere(std::shared_ptr<vec3> c, double r, material* m) {
+            center = std::move(c);
             radius = r;
             setMaterial(m);
         }
 
-        ~sphere();
-
-        virtual bool intersect (ray* r, vec3* &pHit, vec3* &nHit);
+        virtual bool intersect (ray* r, std::shared_ptr<vec3> &pHit, std::shared_ptr<vec3> &nHit);
 };
 
-bool sphere::intersect(ray* r, vec3* &pHit, vec3* &nHit){
-    vec3* oc = vec3::sub(r->origin(), center);
+bool sphere::intersect(ray* r, std::shared_ptr<vec3> &pHit, std::shared_ptr<vec3> &nHit){
+    std::shared_ptr<vec3> oc = vec3::sub(r->origin(), center);
 
     double a = vec3::dot(r->direction(), r->direction());
     double b = 2 * vec3::dot(oc, r->direction());
