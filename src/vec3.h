@@ -30,6 +30,7 @@ class vec3 {
         vec3* mul(double c);
         vec3* mul(vec3* b);
         vec3* div(double c);
+        vec3* normalize();
         double l2norm();
         
         static vec3* randomVec();
@@ -106,3 +107,6 @@ vec3* vec3::randomVec() {
     return vec3::sub(new vec3(x * 2, y * 2, z * 2), new vec3(1, 1, 1));
 }
 
+vec3* vec3::normalize() {
+    return this->div(this->l2norm());
+}

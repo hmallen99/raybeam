@@ -10,6 +10,7 @@
 #include "light.h"
 #include <fstream>
 #include <float.h>
+#include "random.h"
 
 
 
@@ -18,6 +19,7 @@ class RayTracer {
         camera* cam;
         int width;
         int height;
+        int spp;
         int** frame;
         std::vector<object* > objList;
         vec3* intersect(ray* r, int depth);
@@ -43,6 +45,7 @@ RayTracer::RayTracer(camera* c, light* l, int h, int w) {
     lt = l;
     frame = new int* [h * w];
     maxDepth = 50;
+    spp = 100;
     objList = std::vector<object*>();
 }
 
@@ -56,10 +59,15 @@ void RayTracer::trace() {
     int pix = 0;
     for (int j = height - 1; j >= 0; j--) {
         for (int i = 0; i < width; i++) {
-            float u = float(i) / float(width);
-            float v = float(j) / float(height);
-            ray* r = cam->getRay(u, v);
-            vec3* color = intersect(r, 0);
+            vec3* color = new vec3();
+            for (int s = 0; s < spp; s++) {
+                float u = (float(i) + random::drand48()) / float(width);
+                float v = (float(j) + random::drand48()) / float(height);
+                ray* r = cam->getRay(u, v);
+                color = color->add(intersect(r, 0));
+            }
+            color = color->div(spp);
+            
             frame[pix] = new int[3];
             frame[pix][0] = int(color->getx() * 255);
             frame[pix][1] = int(color->gety() * 255);
@@ -73,6 +81,9 @@ void RayTracer::trace() {
 vec3* RayTracer::intersect(ray* r, int depth) {
     if (depth >= maxDepth) {
         return new vec3();
+    }
+    if (depth == maxDepth - 5) {
+        int x = 0;
     }
     double minDist = DBL_MAX;
     vec3* minPHit = new vec3();
@@ -95,6 +106,7 @@ vec3* RayTracer::intersect(ray* r, int depth) {
     if (objNum < 0) {
         return lt->getColor();
     }
+    minNHit = minNHit->normalize();
     ray* outRay = objList[objNum]->getMaterial()->getOutRay(minPHit, minNHit);
     color = objList[objNum]->getMaterial()->getColor()->mul(intersect(outRay, depth + 1));
     return color;
