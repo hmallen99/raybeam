@@ -23,4 +23,7 @@ public:
 	vec3* lower_left_corner;
 	vec3* horizontal;
 	vec3* vertical;
+
+    //TODO: void moveTo(vec3()) -> move origin and lower left corner in parallel
+    //TODO: void rotate(double radians?) -> move lower_left_corner
 };

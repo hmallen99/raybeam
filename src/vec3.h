@@ -6,7 +6,7 @@ class vec3 {
         double x;
         double y;
         double z;
-
+    
     public:
         vec3();
         ~vec3();
@@ -28,9 +28,11 @@ class vec3 {
         vec3* add(vec3* b);
         vec3* sub(vec3* b);
         vec3* mul(double c);
+        vec3* mul(vec3* b);
         vec3* div(double c);
         double l2norm();
         
+        static vec3* randomVec();
 
         vec3 operator-();
     
@@ -77,6 +79,11 @@ vec3* vec3::mul(double c) {
     return new vec3(x * c, y * c, z * c);
 }
 
+vec3* vec3::mul(vec3* b) {
+    return new vec3(x * b->getx(), y * b->gety(), z * b->getz());
+}
+
+
 vec3* vec3::div(double c) {
     return new vec3(x / c, y / c, z / c);
 }
@@ -91,3 +98,11 @@ double vec3::l2norm() {
 vec3 vec3::operator-() {
     return vec3(-x, -y, -z);
 }
+
+vec3* vec3::randomVec() {
+    double x = double(rand()) / double(RAND_MAX);
+    double y = double(rand()) / double(RAND_MAX);
+    double z = double(rand()) / double(RAND_MAX);
+    return vec3::sub(new vec3(x * 2, y * 2, z * 2), new vec3(1, 1, 1));
+}
+

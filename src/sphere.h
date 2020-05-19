@@ -2,6 +2,7 @@
 #include "object.h"
 #include <math.h>
 #include <algorithm>
+#include "material.h"
 
 class sphere : public object {
     private:
@@ -12,14 +13,20 @@ class sphere : public object {
         sphere(vec3* c, double r) {
             center = c;
             radius = r;
-            setMaterial(new material());
+            setMaterial(new lambertian(new vec3(1, 1, 1)));
         }
+        sphere(vec3* c, double r, material* m) {
+            center = c;
+            radius = r;
+            setMaterial(m);
+        }
+
         ~sphere();
 
-        virtual bool intersect (ray* r, vec3* pHit, vec3* nHit);
+        virtual bool intersect (ray* r, vec3* &pHit, vec3* &nHit);
 };
 
-bool sphere::intersect(ray* r, vec3* pHit, vec3* nHit){
+bool sphere::intersect(ray* r, vec3* &pHit, vec3* &nHit){
     vec3* oc = vec3::sub(r->origin(), center);
 
     double a = vec3::dot(r->direction(), r->direction());

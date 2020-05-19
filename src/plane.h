@@ -11,10 +11,10 @@ class plane : object {
             normal = n;
         }
         ~plane();
-        virtual bool intersect(ray* r, vec3* pHit, vec3* nHit);
+        virtual bool intersect(ray* r, vec3* &pHit, vec3* &nHit);
 };
 
-bool plane::intersect(ray* r, vec3* pHit, vec3* nHit) {
+bool plane::intersect(ray* r, vec3* &pHit, vec3* &nHit) {
     double t = vec3::dot(vec3::sub(point, r->origin()), normal) / vec3::dot(r->direction(), normal);
     if (t >= 0) {
         nHit = normal;

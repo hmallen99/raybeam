@@ -12,7 +12,7 @@ class triangle : public object {
             p1 = point1;
             p2 = point2;
             p3 = point3;
-            setMaterial(new material());
+            setMaterial(new lambertian(new vec3(1, 1, 1)));
         }
 
         triangle(vec3* point1, vec3* point2, vec3* point3, material* m) {
@@ -24,11 +24,11 @@ class triangle : public object {
 
         ~triangle();
 
-        virtual bool intersect(ray* r, vec3* pHit, vec3* nHit);
+        virtual bool intersect(ray* r, vec3* &pHit, vec3* &nHit);
 };
 
 // source: https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
-bool triangle::intersect(ray* r, vec3* pHit, vec3* nHit) {
+bool triangle::intersect(ray* r, vec3* &pHit, vec3* &nHit) {
     const float eps = 0.00000001;
     vec3* edge1 = vec3::sub(p2, p1);
     vec3* edge2 = vec3::sub(p3, p1);
