@@ -12,6 +12,7 @@ class sphere : public object {
         sphere(vec3* c, double r) {
             center = c;
             radius = r;
+            setMaterial(new material());
         }
         ~sphere();
 

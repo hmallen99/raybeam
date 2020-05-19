@@ -8,39 +8,40 @@
 #include "sphere.h"
 #include "triangle.h"
 #include "camera.h"
+#include "RayTracer.h"
 
 using namespace std;
 
 int main () {
-    ofstream out("pic.ppm", ios::binary);
-    int nx = 800;
-    int ny = 600;
-    int ns = 10;
-    out << "P3\n" << nx << " " << ny << "\n255\n";
-    vector<object *> objList;
-    //objList.push_back(new sphere(new vec3(0, -100.5, -1), 100));
-    objList.push_back(new triangle(new vec3(-2, 0, -1), new vec3(0, -1, -1), new vec3(2, 0, -1)));
     camera* cam = new camera();
-    vec3* pHit = new vec3();
-    vec3* nHit = new vec3();
-    ray* test = cam->getRay(0.5, 0.47);
-    objList[0]->intersect(test, pHit, nHit);
+    RayTracer* rt = new RayTracer(cam, 600, 800);
+    vector<vec3*> vecList = {
+        new vec3(-2, 1, -1),
+        new vec3(2, 1, -1),
+        new vec3(2, -1, -1),
+        new vec3(-2, -1, -1),
+        new vec3(-2, -1, -2),
+        new vec3(-2, 1, -2),
+        new vec3(2, 1, -2),
+        new vec3(2, -1, -2)
+    };
+    material* green = new material(new vec3(0, 255, 0));
+    material* blue = new material(new vec3(0, 0, 255));
+    material* red = new material(new vec3(255, 0, 0));
+    material* yellow = new material(new vec3(255, 255, 0));
+    material* white = new material(new vec3(255, 255, 255));
+    rt->addObject(new triangle(vecList[0], vecList[5], vecList[3], green));
+    rt->addObject(new triangle(vecList[5], vecList[3], vecList[4], green));
+    rt->addObject(new triangle(vecList[0], vecList[5], vecList[6], red));
+    rt->addObject(new triangle(vecList[0], vecList[1], vecList[6], red));
+    rt->addObject(new triangle(vecList[1], vecList[2], vecList[6], blue));
+    rt->addObject(new triangle(vecList[2], vecList[7], vecList[6], blue));
+    rt->addObject(new triangle(vecList[7], vecList[2], vecList[3], yellow));
+    rt->addObject(new triangle(vecList[3], vecList[7], vecList[4], yellow));
+    rt->addObject(new triangle(vecList[7], vecList[5], vecList[4], white));
+    rt->addObject(new triangle(vecList[7], vecList[6], vecList[5], white));
 
-    for (int j=ny-1; j>=0; j--) {
-        for (int i = 0; i < nx; i++) {
-            float u = float(i) / float(nx);
-            float v = float(j) / float(ny);
-            ray* r = cam->getRay(u, v);
-            for (int o = 0; o < objList.size(); o++) {
-                if (objList[o]->intersect(r, pHit, nHit)) {
-                    out << 255 << " " << 255 << " " << 255 << "\n";
-                }
-                else {
-                    out << 0 << " " << 0 << " " << 0 << "\n";
-                }
-            }
-        }
-    }
-    out.close();
+    rt->trace();
+    rt->writeframe();
     return 0;
 }

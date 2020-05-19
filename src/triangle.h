@@ -12,7 +12,16 @@ class triangle : public object {
             p1 = point1;
             p2 = point2;
             p3 = point3;
+            setMaterial(new material());
         }
+
+        triangle(vec3* point1, vec3* point2, vec3* point3, material* m) {
+            p1 = point1;
+            p2 = point2;
+            p3 = point3;
+            setMaterial(m);
+        }
+
         ~triangle();
 
         virtual bool intersect(ray* r, vec3* pHit, vec3* nHit);
