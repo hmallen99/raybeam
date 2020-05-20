@@ -40,7 +40,9 @@ bool sphere::intersect(ray* r, vec3*  &pHit, vec3*  &nHit){
     double b = 2 * vec3::dot(oc, r->direction());
     double c = vec3::dot(oc, oc) - (radius * radius);
     double det = b * b - 4 * a * c;
+    delete oc;
     if (det < 0) {
+        
         return false;
     }
     double t1 = (-b + sqrt(det)) / (2*a);
@@ -57,8 +59,9 @@ bool sphere::intersect(ray* r, vec3*  &pHit, vec3*  &nHit){
         t = std::max(t1, t2);
     }
     pHit = r->getVec3(t);
-    nHit = vec3::sub(pHit, center);
-    nHit = nHit->div(nHit->l2norm());
-
+    vec3* tempNorm = vec3::sub(pHit, center);
+    double norm = tempNorm->l2norm();
+    nHit = tempNorm->div(norm);
+    delete tempNorm;
     return true;
 }

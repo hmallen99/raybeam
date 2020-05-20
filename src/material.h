@@ -22,7 +22,9 @@ class lambertian : public material {
 
         ray* getOutRay(vec3*  origin, vec3*  normal) {
             vec3* r = vec3::randomVec();
-            ray* retRay = new ray(origin, normal->add(r));
+            vec3* origCopy = new vec3(origin);
+            vec3* dirCopy = normal->add(r);
+            ray* retRay = new ray(origCopy, dirCopy);
             delete r;
             return retRay;
         }

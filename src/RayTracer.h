@@ -24,10 +24,6 @@ class RayTracer {
         int** frame;
         std::vector<object* > objList;
         vec3* intersect(ray* r, int depth);
-        vec3* minPHit;
-        vec3* minNHit;
-        vec3* pHit;
-        vec3* nHit;
         int maxDepth;
         light* lt;
 
@@ -56,10 +52,6 @@ RayTracer::RayTracer(camera* c, light* l, int h, int w) {
 }
 
 RayTracer::~RayTracer() {
-    delete minPHit;
-    delete minNHit;
-    delete pHit;
-    delete nHit;
     delete lt;
     for (int i = 0; i < width*height; i++) {
         delete frame[i];
@@ -74,27 +66,20 @@ int** RayTracer::getFrame() {
 
 void RayTracer::trace() {
     int pix = 0;
-    
-    
     for (int j = height - 1; j >= 0; j--) {
         for (int i = 0; i < width; i++) {
             vec3* color = new vec3();
-            
             for (int s = 0; s < spp; s++) {
-                
                 float u = (float(i) + random::drand48()) / float(width);
                 float v = (float(j) + random::drand48()) / float(height);
                 ray* r = cam->getRay(u, v);
                 vec3* tempColor = intersect(r, 0);
                 vec3* oldColor = color;
                 color = color->add(tempColor);
-                delete oldColor;
-                delete tempColor;
-                delete r;
+                delete oldColor, tempColor, r;
             }
             vec3* oldColor = color;
             color = color->div(spp);
-            delete oldColor;
             frame[pix] = new int[3];
             frame[pix][0] = int(color->getx() * 255);
             frame[pix][1] = int(color->gety() * 255);
@@ -103,7 +88,7 @@ void RayTracer::trace() {
                 std::cout << pix << std::endl;
             }
             pix++;
-            delete color;
+            delete oldColor, color;
         }
     }
     
@@ -116,23 +101,25 @@ vec3* RayTracer::intersect(ray* r, int depth) {
     }
     double minDist = DBL_MAX;
     int objNum  = -1;
-    minPHit = new vec3();
-    minNHit = new vec3();
-    for (int i = 0; i < objList.size(); i++) {
+    vec3* minPHit = new vec3();
+    vec3* minNHit = new vec3();
+    int numObjects = objList.size();
+    for (int i = 0; i < numObjects; i++) {
+        vec3* pHit;
+        vec3* nHit;
         if (objList[i]->intersect(r, pHit, nHit)) {
             vec3* toCam = vec3::sub(pHit, cam->origin);
             double t = toCam->l2norm();
-            delete toCam;
             if (t < minDist) {
                 vec3* tempPHit = minPHit;
                 vec3* tempNHit = minNHit;
-                minPHit = pHit;
-                delete tempPHit;
-                minNHit = nHit;
-                delete tempNHit;
+                minPHit = new vec3(pHit);
+                minNHit = new vec3(nHit);
                 minDist = t;
                 objNum = i;
+                delete tempNHit, tempPHit;
             }
+            delete pHit, nHit, toCam;
         }
     }
     if (objNum < 0) {
@@ -143,12 +130,12 @@ vec3* RayTracer::intersect(ray* r, int depth) {
     }
     vec3* tempNHit = minNHit;
     minNHit = minNHit->normalize();
-    delete tempNHit;
     ray* outRay = objList[objNum]->getMaterial()->getOutRay(minPHit, minNHit);
+    delete minNHit, minPHit, tempNHit;
     vec3* tempIntersect = intersect(outRay, depth + 1);
+    delete outRay;
     vec3* retColor = objList[objNum]->getMaterial()->getColor()->mul(tempIntersect);
     delete tempIntersect;
-    delete outRay;
     return retColor;
 }
 

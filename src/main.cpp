@@ -9,6 +9,7 @@
 #include "triangle.h"
 #include "camera.h"
 #include "RayTracer.h"
+#include "dummyObject.h"
 
 
 using namespace std;
@@ -16,7 +17,7 @@ using namespace std;
 int main () {
     camera* cam = new camera();
     light* lt = new light();
-    RayTracer* rt = new RayTracer(cam, lt, 100, 200);
+    RayTracer* rt = new RayTracer(cam, lt, 1080, 1920);
     vector<vec3*> vecList = {
         new vec3(-2, 1, -1),
         new vec3(2, 1, -1),
@@ -42,9 +43,22 @@ int main () {
     rt->addObject(new triangle(vecList[3], vecList[7], vecList[4], white));
     rt->addObject(new triangle(vecList[7], vecList[5], vecList[4], yellow));
     rt->addObject(new triangle(vecList[7], vecList[6], vecList[5], yellow));
-    rt->addObject(new sphere(new vec3(-1.0, 0, -1), 0.5, blue));
-    //rt->addObject(new sphere(new vec3(1.0, 0, -1), 0.5, green));
-    //rt->addObject(new sphere(new vec3(0, -100.5, -1), 100, red));
+    /*rt->addObject(new sphere(new vec3(-1.0, 0, -1), 0.1, blue));
+    rt->addObject(new sphere(new vec3(1.0, 0, -1), 0.1, green));
+    rt->addObject(new sphere(new vec3(-0.8, 0, -1), 0.1, blue));
+    rt->addObject(new sphere(new vec3(0.8, 0, -1), 0.1, green));
+    rt->addObject(new sphere(new vec3(-0.6, 0, -1), 0.1, blue));
+    rt->addObject(new sphere(new vec3(0.6, 0, -1), 0.1, green));
+    rt->addObject(new sphere(new vec3(-0.4, 0, -1), 0.1, blue));
+    rt->addObject(new sphere(new vec3(0.4, 0, -1), 0.1, green));
+    rt->addObject(new sphere(new vec3(-0.2, 0, -1), 0.1, blue));
+    rt->addObject(new sphere(new vec3(0.2, 0, -1), 0.1, green));
+    rt->addObject(new sphere(new vec3(0, -100.5, -1), 100, red));*/
+    /*rt->addObject(new dummyObject());
+    rt->addObject(new dummyObject());
+    rt->addObject(new dummyObject());
+    rt->addObject(new dummyObject());
+    rt->addObject(new dummyObject());*/
     rt->trace();
     rt->writeframe();
     return 0;

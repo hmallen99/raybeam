@@ -15,6 +15,11 @@ class vec3 {
             y = yc;
             z = zc;
         }
+        vec3(vec3* copyVec) {
+            x = copyVec->getx();
+            y = copyVec->gety();
+            z = copyVec->getx();
+        }
 
         double getx() {return x;}
         double gety() {return y;}
