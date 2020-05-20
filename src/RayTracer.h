@@ -12,6 +12,7 @@
 #include <float.h>
 #include "random.h"
 #include <memory>
+#include <omp.h>
 
 
 
@@ -65,29 +66,52 @@ int** RayTracer::getFrame() {
 }
 
 void RayTracer::trace() {
+    const int numThreads = 8;
+    
+    int*** pixels = new int**[numThreads];
+    int countPix[numThreads];
+    for (int i = 0; i < numThreads; i++) {
+        pixels[i] = new int*[width*height/numThreads];
+        countPix[i] = 0;
+    }
+    omp_set_num_threads(numThreads);
+    #pragma omp parallel
+    {
+        int id = omp_get_thread_num();
+        #pragma omp for
+        for (int j = height - 1; j >= 0; j--) {
+            for (int i = 0; i < width; i++) {
+                vec3 color = vec3();
+                for (int s = 0; s < spp; s++) {
+                    float u = (float(i) + random::drand48()) / float(width);
+                    float v = (float(j) + random::drand48()) / float(height);
+                    ray* r = cam->getRay(u, v);
+                    color = color.add(intersect(r, 0));
+                    delete r;
+                }
+                color = color.div(spp);
+                //int pix = width * i + height - j - 1;
+                //frame[pix] = new int[3];
+                //frame[pix][0] = int(color.getx() * 255);
+                //frame[pix][1] = int(color.gety() * 255);
+                //frame[pix][2] = int(color.getz() * 255);
+                pixels[id][countPix[id]] = new int[3];
+                pixels[id][countPix[id]][0] = int(color.getx() * 255);
+                pixels[id][countPix[id]][1] = int(color.gety() * 255);
+                pixels[id][countPix[id]][2] = int(color.getz() * 255);
+                countPix[id]++;
+            
+            }
+        }
+    }
+    std::cout<<"reached"<<std::endl;
     int pix = 0;
-    for (int j = height - 1; j >= 0; j--) {
-        for (int i = 0; i < width; i++) {
-            vec3 color = vec3();
-            for (int s = 0; s < spp; s++) {
-                float u = (float(i) + random::drand48()) / float(width);
-                float v = (float(j) + random::drand48()) / float(height);
-                ray* r = cam->getRay(u, v);
-                color = color.add(intersect(r, 0));
-                delete r;
-            }
-            color = color.div(spp);
-            frame[pix] = new int[3];
-            frame[pix][0] = int(color.getx() * 255);
-            frame[pix][1] = int(color.gety() * 255);
-            frame[pix][2] = int(color.getz() * 255);
-            if (pix % 1000 == 0) {
-                std::cout << pix << std::endl;
-            }
+    for (int i = 0; i < numThreads; i++) {
+        for(int j = 0; j < width*height/numThreads; j++) {
+            frame[pix] = pixels[i][j];
             pix++;
         }
     }
-    
 }
 
 

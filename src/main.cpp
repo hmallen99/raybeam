@@ -43,9 +43,11 @@ int main () {
     rt->addObject(new triangle(vecList[3], vecList[7], vecList[4], white));
     rt->addObject(new triangle(vecList[7], vecList[5], vecList[4], yellow));
     rt->addObject(new triangle(vecList[7], vecList[6], vecList[5], yellow));
-    /*rt->addObject(new sphere(vec3(-1.0, 0, -1), 0.5, blue));
-    rt->addObject(new sphere(vec3(1.0, 0, -1), 0.5, green));*/
+    rt->addObject(new sphere(vec3(-1.0, 0, -1), 0.5, blue));
+    rt->addObject(new sphere(vec3(1.0, 0, -1), 0.5, green));
     rt->trace();
+    
     rt->writeframe();
+    
     return 0;
 }
