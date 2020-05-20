@@ -48,7 +48,7 @@ RayTracer::RayTracer(camera* c, light* l, int h, int w) {
     lt = l;
     frame = new int* [h * w];
     maxDepth = 50;
-    spp = 10;
+    spp = 50;
     objList = std::vector<object*>();
 }
 
@@ -128,7 +128,7 @@ vec3 RayTracer::intersect(ray* r, int depth) {
         vec3 pHit;
         vec3 nHit;
         if (objList[i]->intersect(r, pHit, nHit)) {
-            vec3 toCam = vec3::sub(pHit, cam->origin);
+            vec3 toCam = vec3::sub(pHit, r->origin());
             double t = toCam.l2norm();
             if (t < minDist) {
                 minPHit = pHit;
@@ -143,7 +143,10 @@ vec3 RayTracer::intersect(ray* r, int depth) {
     }
     
     minNHit = minNHit.normalize();
-    ray* outRay = objList[objNum]->getMaterial()->getOutRay(minPHit, minNHit);
+    if (vec3::dot(minNHit, r->direction()) > 0) {
+        minNHit = -minNHit;
+    }
+    ray* outRay = objList[objNum]->getMaterial()->getOutRay(r, minPHit, minNHit);
     vec3 tempIntersect = intersect(outRay, depth + 1);
     delete outRay;
     vec3 retColor = objList[objNum]->getMaterial()->getColor().mul(tempIntersect);
