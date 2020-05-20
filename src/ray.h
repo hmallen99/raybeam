@@ -5,27 +5,32 @@
 class ray
 {
 private:
-    std::shared_ptr<vec3> o;
-    std::shared_ptr<vec3> d;
+    vec3* o;
+    vec3* d;
 
 public:
-    ray(std::shared_ptr<vec3> origin, std::shared_ptr<vec3> direction);
+    ray(vec3* origin, vec3* direction);
     ~ray();
-    std::shared_ptr<vec3> origin() {return o;}
-    std::shared_ptr<vec3> direction() {return d;}
-    std::shared_ptr<vec3> getVec3(double t);
+    vec3* origin() {return o;}
+    vec3* direction() {return d;}
+    vec3* getVec3(double t);
 };
 
-ray::ray(std::shared_ptr<vec3> origin, std::shared_ptr<vec3> direction)
+ray::ray(vec3* origin, vec3* direction)
 {
-    o = std::move(origin);
-    d = std::move(direction);
+    o = origin;
+    d = direction;
 }
 
-std::shared_ptr<vec3> ray::getVec3(double t) {
-    return vec3::add(o, d->mul(t));
+vec3* ray::getVec3(double t) {
+    vec3* dt = d->mul(t);
+    vec3* retVec = vec3::add(o, dt);
+    delete dt;
+    return retVec;
 }
 
 ray::~ray()
 {
+    delete o;
+    delete d;
 }

@@ -20,20 +20,20 @@ class vec3 {
         double gety() {return y;}
         double getz() {return z;}
 
-        static std::shared_ptr<vec3> add(std::shared_ptr<vec3> a, std::shared_ptr<vec3> b);
-        static std::shared_ptr<vec3> sub(std::shared_ptr<vec3> a, std::shared_ptr<vec3> b);
-        static std::shared_ptr<vec3> cross(std::shared_ptr<vec3> a, std::shared_ptr<vec3> b);
-        static double dot(std::shared_ptr<vec3> a, std::shared_ptr<vec3> b);
+        static vec3* add(vec3* a, vec3* b);
+        static vec3* sub(vec3* a, vec3* b);
+        static vec3* cross(vec3* a, vec3* b);
+        static double dot(vec3* a, vec3* b);
 
-        std::shared_ptr<vec3> add(std::shared_ptr<vec3> b);
-        std::shared_ptr<vec3> sub(std::shared_ptr<vec3> b);
-        std::shared_ptr<vec3> mul(double c);
-        std::shared_ptr<vec3> mul(std::shared_ptr<vec3> b);
-        std::shared_ptr<vec3> div(double c);
-        std::shared_ptr<vec3> normalize();
+        vec3* add(vec3* b);
+        vec3* sub(vec3* b);
+        vec3* mul(double c);
+        vec3* mul(vec3* b);
+        vec3* div(double c);
+        vec3* normalize();
         double l2norm();
         
-        static std::shared_ptr<vec3> randomVec();
+        static vec3* randomVec();
 
         vec3 operator-();
     
@@ -45,44 +45,44 @@ vec3::vec3() {
     z = 0;
 }
 
-std::shared_ptr<vec3>vec3::add(std::shared_ptr<vec3> a, std::shared_ptr<vec3> b) {
-    return std::make_shared<vec3>(a->getx() + b->getx(), a->gety() + b-> gety(), a->getz() + b->getz());
+vec3*vec3::add(vec3* a, vec3* b) {
+    return new vec3(a->getx() + b->getx(), a->gety() + b-> gety(), a->getz() + b->getz());
 }
 
-std::shared_ptr<vec3> vec3::sub(std::shared_ptr<vec3> a, std::shared_ptr<vec3> b) {
-    return std::make_shared<vec3>(a->getx() - b->getx(), a->gety() - b-> gety(), a->getz() - b->getz());
+vec3* vec3::sub(vec3* a, vec3* b) {
+    return new vec3(a->getx() - b->getx(), a->gety() - b-> gety(), a->getz() - b->getz());
 }
 
-std::shared_ptr<vec3> vec3::cross(std::shared_ptr<vec3> a, std::shared_ptr<vec3> b) {
+vec3* vec3::cross(vec3* a, vec3* b) {
     double i = (a->gety() * b->getz()) - (a->getz() * b->gety());
     double j = (a->getz() * b->getx()) - (a->getx() * b->getz());
     double k = (a->getx() * b->gety()) - (a->gety() * b->getx());
-    return std::make_shared<vec3>(i, j, k);
+    return new vec3(i, j, k);
 }
 
-double vec3::dot(std::shared_ptr<vec3> a, std::shared_ptr<vec3> b) {
+double vec3::dot(vec3* a, vec3* b) {
     return a->getx()* b->getx() + a->gety()*b->gety() + a->getz()*b->getz();
 }
 
-std::shared_ptr<vec3> vec3::add(std::shared_ptr<vec3> b) {
-    return std::make_shared<vec3>(x + b->getx(), y + b->gety(), z + b->getz());
+vec3* vec3::add(vec3* b) {
+    return new vec3(x + b->getx(), y + b->gety(), z + b->getz());
 }
 
-std::shared_ptr<vec3> vec3::sub(std::shared_ptr<vec3> b) {
-    return std::make_shared<vec3>(x - b->getx(), y - b->gety(), z - b->getz());
+vec3* vec3::sub(vec3* b) {
+    return new vec3(x - b->getx(), y - b->gety(), z - b->getz());
 }
 
-std::shared_ptr<vec3> vec3::mul(double c) {
-    return std::make_shared<vec3>(x * c, y * c, z * c);
+vec3* vec3::mul(double c) {
+    return new vec3(x * c, y * c, z * c);
 }
 
-std::shared_ptr<vec3> vec3::mul(std::shared_ptr<vec3> b) {
-    return std::make_shared<vec3>(x * b->getx(), y * b->gety(), z * b->getz());
+vec3* vec3::mul(vec3* b) {
+    return new vec3(x * b->getx(), y * b->gety(), z * b->getz());
 }
 
 
-std::shared_ptr<vec3> vec3::div(double c) {
-    return std::make_shared<vec3>(x / c, y / c, z / c);
+vec3* vec3::div(double c) {
+    return new vec3(x / c, y / c, z / c);
 }
 
 
@@ -96,13 +96,18 @@ vec3 vec3::operator-() {
     return vec3(-x, -y, -z);
 }
 
-std::shared_ptr<vec3> vec3::randomVec() {
+vec3* vec3::randomVec() {
     double x = double(rand()) / double(RAND_MAX);
     double y = double(rand()) / double(RAND_MAX);
     double z = double(rand()) / double(RAND_MAX);
-    return vec3::sub(std::make_shared<vec3>(x * 2, y * 2, z * 2), std::make_shared<vec3>(1, 1, 1));
+    vec3* r = new vec3(x * 2, y * 2, z * 2);
+    vec3* s = new vec3(1, 1, 1);
+    vec3* retVec = vec3::sub(r, s);
+    delete r;
+    delete s;
+    return retVec;
 }
 
-std::shared_ptr<vec3> vec3::normalize() {
+vec3* vec3::normalize() {
     return this->div(this->l2norm());
 }
