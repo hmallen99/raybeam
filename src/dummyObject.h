@@ -6,9 +6,9 @@ class dummyObject : public object {
         dummyObject() {
 
         }
-        bool intersect(ray* r, vec3* &pHit, vec3* &nHit) {
-            nHit = new vec3();
-            pHit = new vec3();
+        bool intersect(ray* r, vec3 &pHit, vec3 &nHit) {
+            nHit = vec3();
+            pHit = vec3();
             return true;
         }
 };
