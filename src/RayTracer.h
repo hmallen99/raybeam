@@ -13,6 +13,9 @@
 #include "random.h"
 #include <memory>
 #include <omp.h>
+#include <windows.h>
+#include <gl/GL.h>
+#include <stdint.h>
 
 
 
@@ -35,12 +38,14 @@ class RayTracer {
         void writeframe();
         int** getFrame();
         void trace();
+        void drawGL();
         void addObject(object* obj) {
             objList.push_back(obj);
         }
         void testVec(ray* in) {
             intersect(in, 0);
         }
+
 
 };
 

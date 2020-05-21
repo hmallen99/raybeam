@@ -11,10 +11,25 @@ public:
 		origin = vec3(0.0, 0.0, 0.0);
 	}
     camera(vec3 o) {
-		lower_left_corner = vec3(-2.0, -1.0, -1.0);
+		
 		horizontal = vec3(4.0, 0.0, 0.0);
 		vertical = vec3(0.0, 2.0, 0.0);
 		origin = o;
+		lower_left_corner = origin.add(vec3(-2.0, -1.0, -1.0));
+	}
+
+	camera(vec3 from, vec3 to) {
+		origin  = from;
+		vec3 vup = vec3(0, 1, 0);
+		double height = 2.0;
+		double width = 4.0;
+		vec3 w = vec3::sub(from, to).normalize();
+		vec3 u = vec3::cross(vup, w).normalize();
+		vec3 v = vec3::cross(w, u);
+		horizontal = u.mul(width);
+		vertical = v.mul(height);
+		lower_left_corner = origin.sub(horizontal.div(2.0)).sub(vertical.div(2.0)).sub(w);
+
 	}
 
 	ray* getRay(float u, float v) {
