@@ -45,11 +45,11 @@ bool sphere::intersect(ray* r, vec3  &pHit, vec3  &nHit){
     double t1 = (-b + sqrt(det)) / (2*a);
     double t2 = (-b - sqrt(det)) / (2*a);
 
-    if (std::max(t1, t2) < 0) {
+    if (std::max(t1, t2) <= 0.0001) {
         return false;
     }
     double t;
-    if (std::min(t1, t2) >= 0) {
+    if (std::min(t1, t2) > 0) {
         t = std::min(t1, t2);
     }
     else {
@@ -57,7 +57,6 @@ bool sphere::intersect(ray* r, vec3  &pHit, vec3  &nHit){
     }
     pHit = r->getVec3(t);
     vec3 tempNorm = vec3::sub(pHit, center);
-    double norm = tempNorm.l2norm();
-    nHit = tempNorm.div(norm);
+    nHit = tempNorm.normalize();
     return true;
 }

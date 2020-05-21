@@ -55,6 +55,9 @@ bool triangle::intersect(ray* r, vec3 &pHit, vec3 &nHit) {
     }
 
     nHit = normal;
+    if (vec3::dot(nHit, r->direction()) < 0) {
+        nHit = -nHit;
+    } 
     double t = f * vec3::dot(edge2, q);
     if (t < eps && t > -eps) {
         return false;

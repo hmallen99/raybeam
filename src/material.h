@@ -39,6 +39,7 @@ class metal : public material {
         
         ray* getOutRay(ray* in, vec3 origin, vec3 normal) {
             vec3 reflected = reflect(in->direction(), normal);
+            reflected = reflected.normalize();
             return new ray(origin, reflected);
         }
 

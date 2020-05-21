@@ -139,7 +139,9 @@ vec3 RayTracer::intersect(ray* r, int depth) {
         }
     }
     if (objNum < 0) {
-        return lt->getColor();
+        double t = 0.5 * r->direction().normalize().gety() + 1;
+        //return lt->getColor();
+        return vec3((1.0 - t), (1.0 - t), (1.0 - t)).add(vec3(t *0.5, t * 0.7, t));
     }
     
     minNHit = minNHit.normalize();
@@ -148,9 +150,9 @@ vec3 RayTracer::intersect(ray* r, int depth) {
     }
     ray* outRay = objList[objNum]->getMaterial()->getOutRay(r, minPHit, minNHit);
     vec3 tempIntersect = intersect(outRay, depth + 1);
-    delete outRay;
     vec3 retColor = objList[objNum]->getMaterial()->getColor().mul(tempIntersect);
     return retColor;
+    //return outRay->direction().normalize().add(vec3(1, 1, 1)).mul(0.5);
 }
 
 void RayTracer::writeframe() {

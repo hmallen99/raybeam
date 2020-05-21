@@ -61,7 +61,7 @@ vec3 vec3::cross(vec3 a, vec3 b) {
 }
 
 double vec3::dot(vec3 a, vec3 b) {
-    return a.getx() * b.getx() + a.gety() *b.gety() + a.getz() *b.getz();
+    return a.getx() * b.getx() + a.gety() * b.gety() + a.getz() * b.getz();
 }
 
 vec3 vec3::add(vec3 b) {
