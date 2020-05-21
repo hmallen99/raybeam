@@ -32,6 +32,11 @@ class vec3 {
         vec3 div(double c);
         vec3 normalize();
         double l2norm();
+        vec3 operator+(vec3 b);
+        vec3 operator-(vec3 b);
+        vec3 operator*(double c);
+        vec3 operator/(double c);
+        double dot(vec3 b);
         
         static vec3 randomVec();
 
@@ -109,4 +114,24 @@ vec3 vec3::randomVec() {
 vec3 vec3::normalize() {
     double norm = l2norm();
     return vec3(x / norm, y/ norm, z/norm);
+}
+
+vec3 vec3::operator+(vec3 b) {
+    return vec3(x + b.getx(), y + b.gety(), z + b.getz());
+}
+
+vec3 vec3::operator-(vec3 b) {
+    return vec3(x - b.getx(), y - b.gety(), z - b.getz());
+}
+
+vec3 vec3::operator*(double c) {
+    return vec3(x * c, y * c, z * c);
+}
+
+vec3 vec3::operator/(double c) {
+    return vec3(x / c, y / c, z / c);
+}
+
+double vec3::dot(vec3 b) {
+    return x * b.getx() + y * b.gety() + z * b.getz();
 }

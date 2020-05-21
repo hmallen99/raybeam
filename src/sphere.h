@@ -49,14 +49,20 @@ bool sphere::intersect(ray* r, vec3  &pHit, vec3  &nHit){
         return false;
     }
     double t;
-    if (std::min(t1, t2) > 0) {
+    bool inside = false;
+    if (std::min(t1, t2) > 0.0001) {
         t = std::min(t1, t2);
+        
     }
     else {
         t = std::max(t1, t2);
+        inside = true;
     }
     pHit = r->getVec3(t);
     vec3 tempNorm = vec3::sub(pHit, center);
     nHit = tempNorm.normalize();
+    if (inside) {
+        nHit = -nHit;
+    }
     return true;
 }

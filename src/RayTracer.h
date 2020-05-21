@@ -38,6 +38,9 @@ class RayTracer {
         void addObject(object* obj) {
             objList.push_back(obj);
         }
+        void testVec(ray* in) {
+            intersect(in, 0);
+        }
 
 };
 
@@ -90,11 +93,6 @@ void RayTracer::trace() {
                     delete r;
                 }
                 color = color.div(spp);
-                //int pix = width * i + height - j - 1;
-                //frame[pix] = new int[3];
-                //frame[pix][0] = int(color.getx() * 255);
-                //frame[pix][1] = int(color.gety() * 255);
-                //frame[pix][2] = int(color.getz() * 255);
                 pixels[id][countPix[id]] = new int[3];
                 pixels[id][countPix[id]][0] = int(color.getx() * 255);
                 pixels[id][countPix[id]][1] = int(color.gety() * 255);
@@ -140,19 +138,13 @@ vec3 RayTracer::intersect(ray* r, int depth) {
     }
     if (objNum < 0) {
         double t = 0.5 * r->direction().normalize().gety() + 1;
-        //return lt->getColor();
         return vec3((1.0 - t), (1.0 - t), (1.0 - t)).add(vec3(t *0.5, t * 0.7, t));
     }
-    
     minNHit = minNHit.normalize();
-    if (vec3::dot(minNHit, r->direction()) > 0) {
-        minNHit = -minNHit;
-    }
     ray* outRay = objList[objNum]->getMaterial()->getOutRay(r, minPHit, minNHit);
     vec3 tempIntersect = intersect(outRay, depth + 1);
     vec3 retColor = objList[objNum]->getMaterial()->getColor().mul(tempIntersect);
     return retColor;
-    //return outRay->direction().normalize().add(vec3(1, 1, 1)).mul(0.5);
 }
 
 void RayTracer::writeframe() {
