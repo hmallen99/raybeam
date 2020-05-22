@@ -33,6 +33,11 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "typeinfo": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "cstddef": "cpp",
+        "algorithm": "cpp",
+        "system_error": "cpp",
+        "limits": "cpp",
+        "stdexcept": "cpp"
     }
 }
