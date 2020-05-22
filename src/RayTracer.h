@@ -37,6 +37,7 @@ class RayTracer {
         void writeframe();
         int** getFrame();
         void trace();
+        vec3 intersectIterative(ray * r);
         GLubyte* drawGL();
         void addObject(object* obj) {
             objList.push_back(obj);
@@ -55,7 +56,7 @@ RayTracer::RayTracer(camera* c, light* l, int h, int w) {
     lt = l;
     frame = new int* [h * w];
     maxDepth = 50;
-    spp = 100;
+    spp = 50;
     objList = std::vector<object*>();
 }
 
@@ -73,6 +74,7 @@ int** RayTracer::getFrame() {
 }
 
 void RayTracer::trace() {
+    std::cout << "Started Tracing" <<std::endl;
     const int numThreads = 8;
     
     int*** pixels = new int**[numThreads];
@@ -93,7 +95,8 @@ void RayTracer::trace() {
                     float u = (float(i) + random::drand48()) / float(width);
                     float v = (float(j) + random::drand48()) / float(height);
                     ray* r = cam->getRay(u, v);
-                    color = color.add(intersect(r, 0));
+                    //color = color.add(intersect(r, 0));
+                    color = color.add(intersectIterative(r));
                     delete r;
                 }
                 color = color.div(spp);
@@ -102,11 +105,9 @@ void RayTracer::trace() {
                 pixels[id][countPix[id]][1] = int(color.gety() * 255);
                 pixels[id][countPix[id]][2] = int(color.getz() * 255);
                 countPix[id]++;
-            
             }
         }
     }
-    std::cout<<"reached"<<std::endl;
     int pix = 0;
     for (int i = 0; i < numThreads; i++) {
         for(int j = 0; j < width*height/numThreads; j++) {
@@ -114,8 +115,48 @@ void RayTracer::trace() {
             pix++;
         }
     }
+    std::cout << "Finished Tracing" << std::endl;
 }
 
+vec3 RayTracer::intersectIterative(ray* r) {
+    ray* curRay = new ray(r->origin(), r->direction());
+    vec3 color = vec3(1, 1, 1);
+    int numObjects = objList.size();
+    for (int j = 0; j < maxDepth; j++) {
+        double minDist = DBL_MAX;
+        int objNum = -1;
+        vec3 minPHit = vec3();
+        vec3 minNHit = vec3();
+        for (int i = 0; i < numObjects; i++) {
+            vec3 pHit;
+            vec3 nHit;
+            if (objList[i]->intersect(curRay, pHit, nHit)) {
+                vec3 toCam = vec3::sub(pHit, curRay->origin());
+                double t = toCam.l2norm();
+                if (t < minDist) {
+                    minPHit = pHit;
+                    minNHit = nHit;
+                    minDist = t;
+                    objNum = i;
+                }
+            }
+        }
+        if (objNum < 0) {
+            double t = 0.5 * curRay->direction().normalize().gety() + 1;
+            vec3 sky = vec3((1.0 - t), (1.0 - t), (1.0 - t)).add(vec3(t *0.5, t * 0.7, t));
+            return color.mul(sky);
+        }
+        else {
+            ray* temp = curRay;
+            curRay = objList[objNum]->getMaterial()->getOutRay(curRay, minPHit, minNHit);
+            delete temp;
+            vec3 tempColor = objList[objNum]->getMaterial()->getColor();
+            color = color.mul(tempColor);
+        }
+    }
+    delete curRay;
+    return vec3();
+}
 
 vec3 RayTracer::intersect(ray* r, int depth) {
     if (depth >= maxDepth) {
@@ -152,12 +193,14 @@ vec3 RayTracer::intersect(ray* r, int depth) {
 }
 
 void RayTracer::writeframe() {
+    std::cout << "Started Writing to File" << std::endl;
     std::ofstream out("pic.ppm", std::ios::binary);
     out << "P3\n" << width << " " << height << "\n255\n";
     for (int i = 0; i < width * height; i++) {
         out << frame[i][0] << " " << frame[i][1] << " " << frame[i][2] << "\n";
     }
     out.close();
+    std::cout << "Finsihed Writing to File" << std::endl;
 }
 
 GLubyte* RayTracer::drawGL() {
