@@ -3,17 +3,21 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "C/C++: g++.exe build active file",
-            "command": "C:\\mingw-w64\\mingw64\\bin\\g++.exe",
+            "label": "shell: g++.exe build active file",
+            "command": "C:/mingw-w64/mingw64/bin/g++.exe",
             "args": [
                 "-g",
                 "${file}",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
-                "-fopenmp"
+                "-fopenmp",
+                "-lopengl32",
+                "-lglew32",
+                "-lfreeglut",
+                "-lglu32"
             ],
             "options": {
-                "cwd": "C:\\mingw-w64\\mingw64\\bin"
+                "cwd": "C:/mingw-w64/mingw64/bin"
             },
             "problemMatcher": [
                 "$gcc"
@@ -26,15 +30,20 @@
         {
             "type": "shell",
             "label": "g++.exe build active file",
-            "command": "C:\\mingw-w64\\mingw64\\bin\\g++.exe",
+            "command": "C:/mingw-w64/mingw64/bin/g++.exe",
             "args": [
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+				"${fileDirname}\\${fileBasenameNoExtension}.exe",
+				"-fopenmp",
+				"-lopengl32",
+				"-lglew32",
+				"-lfreeglut",
+				"-lglu32"
             ],
             "options": {
-                "cwd": "C:\\mingw-w64\\mingw64\\bin"
+                "cwd": "C:/mingw-w64/mingw64/bin"
             }
         }
     ]

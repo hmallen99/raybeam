@@ -13,8 +13,7 @@
 #include "random.h"
 #include <memory>
 #include <omp.h>
-#include <windows.h>
-#include <gl/GL.h>
+//#include <GL/freeglut.h>
 #include <stdint.h>
 
 
@@ -159,4 +158,18 @@ void RayTracer::writeframe() {
         out << frame[i][0] << " " << frame[i][1] << " " << frame[i][2] << "\n";
     }
     out.close();
+}
+
+void RayTracer::drawGL() {
+    uint8_t* pixels = new uint8_t[width*height*3];
+    int count = 0;
+    for (int i = 0; i < width * height; i++) {
+        pixels[count] = uint8_t(frame[i][0]);
+        pixels[count + 1] = uint8_t(frame[i][1]);
+        pixels[count + 2] = uint8_t(frame[i][2]);
+        count += 3;
+    }
+    std::cout<< "Reached" <<std::endl;
+    
+    //glDrawPixels(width, height, GL_UNSIGNED_BYTE, GL_RGB, pixels);
 }
