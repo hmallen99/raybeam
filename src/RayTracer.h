@@ -13,7 +13,7 @@
 #include "random.h"
 #include <memory>
 #include <omp.h>
-//#include <GL/freeglut.h>
+#include <GL/freeglut.h>
 #include <stdint.h>
 
 
@@ -37,7 +37,7 @@ class RayTracer {
         void writeframe();
         int** getFrame();
         void trace();
-        void drawGL();
+        GLubyte* drawGL();
         void addObject(object* obj) {
             objList.push_back(obj);
         }
@@ -160,16 +160,18 @@ void RayTracer::writeframe() {
     out.close();
 }
 
-void RayTracer::drawGL() {
-    uint8_t* pixels = new uint8_t[width*height*3];
+GLubyte* RayTracer::drawGL() {
+    GLubyte* pixels = new GLubyte[width*height*3];
     int count = 0;
-    for (int i = 0; i < width * height; i++) {
-        pixels[count] = uint8_t(frame[i][0]);
-        pixels[count + 1] = uint8_t(frame[i][1]);
-        pixels[count + 2] = uint8_t(frame[i][2]);
-        count += 3;
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            //std::cout << i << " " << j << " " << i * height + j << std::endl;
+            int h_val = (height - i - 1) * width + j;
+            pixels[count] = GLubyte(frame[h_val][0]);
+            pixels[count + 1] = GLubyte(frame[h_val][1]);
+            pixels[count + 2] = GLubyte(frame[h_val][2]);
+            count += 3;
+        }
     }
-    std::cout<< "Reached" <<std::endl;
-    
-    //glDrawPixels(width, height, GL_UNSIGNED_BYTE, GL_RGB, pixels);
+    return pixels;
 }

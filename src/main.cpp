@@ -16,34 +16,23 @@
 
 using namespace std;
 
+
+int width = 400;
+int height = 200;
+GLubyte* PixelBuffer = new GLubyte[width * height * 3];
+
 void display() {
-   glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
+   glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Set background color to black and opaque
    glClear(GL_COLOR_BUFFER_BIT);         // Clear the color buffer (background)
- 
-   // Draw a Red 1x1 Square centered at origin
-   glBegin(GL_QUADS);              // Each set of 4 vertices form a quad
-      glColor3f(1.0f, 0.0f, 0.0f); // Red
-      glVertex2f(-0.5f, -0.5f);    // x, y
-      glVertex2f( 0.5f, -0.5f);
-      glVertex2f( 0.5f,  0.5f);
-      glVertex2f(-0.5f,  0.5f);
-   glEnd();
- 
-   glFlush();  // Render now
+   glDrawPixels(width, height, GL_RGB, GL_UNSIGNED_BYTE, PixelBuffer);
+   glutSwapBuffers();  // Render now
 }
 
 int main (int argc, char** argv) {
-    std::cout << "hello" << std::endl;
-    glutInit(&argc, argv);                 // Initialize GLUT
-    glutCreateWindow("OpenGL Setup Test"); // Create a window with the given title
-    glutInitWindowSize(320, 320);   // Set the window's initial width & height
-    glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
-    glutDisplayFunc(display); // Register display callback handler for window re-paint
-    glutMainLoop();
     
-    camera* cam = new camera(vec3(-2, 2, 1), vec3(0, 0, -1));
+    camera* cam = new camera(vec3(0, 0, 0), vec3(0, 0, -1));
     light* lt = new light();
-    RayTracer* rt = new RayTracer(cam, lt, 200, 400);
+    RayTracer* rt = new RayTracer(cam, lt, height, width);
     vector<vec3> vecList = {
         vec3(-2, 1, -1),
         vec3(2, 1, -1),
@@ -86,7 +75,14 @@ int main (int argc, char** argv) {
     //rt->testVec(r);
     rt->trace();
     
-    rt->drawGL();
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+    glutCreateWindow("OpenGL Setup Test");
+    glutInitWindowSize(width, height);
+    glutInitWindowPosition(50, 50);
+    PixelBuffer = rt->drawGL(); 
+    glutDisplayFunc(display);
+    glutMainLoop();
     rt->writeframe();
     
     return 0;
