@@ -55,7 +55,7 @@ RayTracer::RayTracer(camera* c, light* l, int h, int w) {
     lt = l;
     frame = new int* [h * w];
     maxDepth = 50;
-    spp = 50;
+    spp = 100;
     objList = std::vector<object*>();
 }
 

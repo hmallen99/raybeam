@@ -17,8 +17,8 @@
 using namespace std;
 
 
-int width = 400;
-int height = 200;
+int width = 1920;
+int height = 1080;
 GLubyte* PixelBuffer = new GLubyte[width * height * 3];
 
 void display() {
@@ -66,23 +66,21 @@ int main (int argc, char** argv) {
     rt->addObject(new sphere(vec3(0, -100.5, -1), 100, green));*/
 
     rt->addObject(new sphere(vec3(0, -10004, -20), 10000, white));
-    rt->addObject(new sphere(vec3(0, 0, -20), 4, glass));
-    rt->addObject(new sphere(vec3(5.0, -1, -15), 2, chrome));
-    rt->addObject(new sphere(vec3(5, 0, -25), 3, red));
-    rt->addObject(new sphere(vec3(-5.5, 0, -15), 3, blue));
-
-    //ray* r = new ray(vec3(0, 0, 0), vec3(0, 0, -1));
-    //rt->testVec(r);
+    rt->addObject(new sphere(vec3(0, 0, -15), 4, glass));
+    rt->addObject(new sphere(vec3(5.0, -1, -10), 2, chrome));
+    rt->addObject(new sphere(vec3(5, 0, -20), 3, red));
+    rt->addObject(new sphere(vec3(-5.5, 0, -10), 3, blue));
+    
     rt->trace();
     
-    glutInit(&argc, argv);
+    /*glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutCreateWindow("OpenGL Setup Test");
     glutInitWindowSize(width, height);
     glutInitWindowPosition(50, 50);
     PixelBuffer = rt->drawGL(); 
     glutDisplayFunc(display);
-    glutMainLoop();
+    glutMainLoop();*/
     rt->writeframe();
     
     return 0;
