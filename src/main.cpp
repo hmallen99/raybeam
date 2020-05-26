@@ -32,7 +32,7 @@ int main (int argc, char** argv) {
     
     camera* cam = new camera(vec3(0, 0, 0), vec3(0, 0, -1));
     light* lt = new light();
-    RayTracer* rt = new RayTracer(cam, lt, height, width);
+    RayTracer* rt = new RayTracer(cam, lt, height, width, 50, 100);
     vector<vec3> vecList = {
         vec3(-2, 1, -1),
         vec3(2, 1, -1),

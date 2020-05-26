@@ -32,7 +32,7 @@ class RayTracer {
 
 
     public:
-        RayTracer(camera* c, light* l, int h, int w);
+        RayTracer(camera* c, light* l, int h, int w, int md, int ns);
         ~RayTracer();
         void writeframe();
         int** getFrame();
@@ -49,14 +49,14 @@ class RayTracer {
 
 };
 
-RayTracer::RayTracer(camera* c, light* l, int h, int w) {
+RayTracer::RayTracer(camera* c, light* l, int h, int w, int md, int ns) {
     cam = c;
     height = h;
     width = w;
     lt = l;
     frame = new int* [h * w];
-    maxDepth = 50;
-    spp = 50;
+    maxDepth = md;
+    spp = ns;
     objList = std::vector<object*>();
 }
 
@@ -144,6 +144,7 @@ vec3 RayTracer::intersectIterative(ray* r) {
         if (objNum < 0) {
             double t = 0.5 * curRay->direction().normalize().gety() + 1;
             vec3 sky = vec3((1.0 - t), (1.0 - t), (1.0 - t)).add(vec3(t *0.5, t * 0.7, t));
+            delete curRay;
             return color.mul(sky);
         }
         else {
